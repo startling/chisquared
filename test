@@ -3,8 +3,8 @@
 set -e
 
 function compare () {
-    score_1="$(./chisquared <<< $1)"
-    score_2="$(./chisquared <<< $2)"
+    score_1="$(./chi^2 <<< $1)"
+    score_2="$(./chi^2 <<< $2)"
     if [ $(bc <<< "$score_1 < $score_2") -ne 1 ]; then
 	echo "[x] \"$1\" >= \"$2\"; exiting." 1>&2
 	exit 1

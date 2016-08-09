@@ -1,15 +1,16 @@
 CFLAGS=-Wall -Werror -g -O0
 INSTALL_DIR=~/.bin/
 
-all: chisquared
+
+all: chi^2
 
 .PHONY: all test
 
-chisquared: main.c
+chi^2: main.c
 	$(CC) $< -o $@ $(CFLAGS)
 
-test: chisquared
+test: chi^2
 	./test
 
 install:
-	[ -d $(INSTALL_DIR) ] && cp chisquared $(INSTALL_DIR)
+	[ -d $(INSTALL_DIR) ] && cp chi^2 $(INSTALL_DIR)
