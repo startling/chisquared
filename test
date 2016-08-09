@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+function compare () {
+    score_1="$(./chisquared <<< $1)"
+    score_2="$(./chisquared <<< $2)"
+    if [ $(bc <<< "$score_1 < $score_2") -ne 1 ]; then
+	echo "[x] \"$1\" >= \"$2\"; exiting." 1>&2
+	exit 1
+    else
+	echo "[✓] \"$1\" < \"$2\"" 1>&2
+    fi
+}
+
+compare "data" "xxxx"
+compare "hello world" "xyz"
+compare "hello world, how are you?" "CQSZb3sePl=SSCs3EThvThgu\\S"
+compare "hello world, how are you?" "anSZ'xB?exIfSC,yET#&ThSadY"
+compare "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@BraES"
+
+
