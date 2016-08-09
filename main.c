@@ -33,24 +33,28 @@ const double frequencies[26] = {
 
 
 
-double chi_squared(int counts[26], int length) {
+double chi_squared(int counts[26], int valid_count, int unexpected_count) {
   double chi2 = 0.0;
   for (int i = 0; i < 26; i++) {
-    double expected = (double) length * frequencies[i];
+    double expected = ((double) valid_count) * frequencies[i];
     double error = (double) (expected - counts[i]);
     chi2 += (error * error) / expected;
   }
+  /* we had n occurences of things that should have been very unlikely. */
+  chi2 += ((double) unexpected_count * unexpected_count) / 0.0001;
   return chi2;
 }
 
 
 int process_char(int counts[26], char x) {
-  /* lowercase ascii. */
   if (x >= 'a' && x <= 'z') {
+    /* lowercase ascii. */
     counts[x - 'a']++;
   } else if (x >= 'A' && x <= 'Z') {
+    /* uppercase ascii */
     counts[x - 'A']++;
   } else {
+    /* somethin weird  */
     return 1;
   }
   return 0;
@@ -58,18 +62,20 @@ int process_char(int counts[26], char x) {
 
 int main (int argc, char **argv) {
   if (argc > 1) {
-    fprintf(stderr, "usage:\n$ %s <<< \"data\"\n16.883203\n$\n", argv[0]);
+    fprintf(stderr, "usage:\n$ printf \"data\" | %s\"\n16.883203\n$\n", argv[0]);
     exit(1);
   }
 
   /* initialize to zero */
   char here = 0;
   int counts[26] = {0};
-  int letter_count = 0;
+  int valid_count, unexpected_count = 0;
 
-  /* read everything. */
+  /* read everything, keep track of zeros vs ones */
   while (fread(&here, sizeof(char), 1, stdin))
-    letter_count += 1 - process_char(counts, here);
-
-  printf("%f\n", chi_squared(counts, letter_count));
+    if (process_char(counts, here))
+      unexpected_count++;
+    else
+      valid_count++;
+  printf("%f\n", chi_squared(counts, valid_count, unexpected_count));
 }
