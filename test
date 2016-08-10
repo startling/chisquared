@@ -3,8 +3,9 @@
 set -e
 
 function compare () {
-    score_1="$(printf $1 | ./chi^2)"
-    score_2="$(printf $2 | ./chi^2)"
+    score_1="$(printf "$1" | ./chi^2)"
+    score_2="$(printf "$2" | ./chi^2)"
+    echo $score_1 $score_2
     if [ $(bc <<< "$score_1 < $score_2") -ne 1 ]; then
 	echo "[x] \"$1\" >= \"$2\"; exiting." 1>&2
 	exit 1
@@ -19,3 +20,4 @@ compare "hello world, how are you?" "CQSZb3sePl=SSCs3EThvThgu\\S"
 compare "hello world, how are you?" "anSZ'xB?exIfSC,yET#&ThSadY"
 compare "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@BraES"
 compare "aaa" "aaa!!!!!!!!"
+compare " " "a"
