@@ -3,21 +3,31 @@
 set -e
 
 function compare () {
-    score_1="$(printf "$1" | ./chi^2)"
-    score_2="$(printf "$2" | ./chi^2)"
+    score_1="$(printf "$2" | ./chi^2 -n "$1")"
+    score_2="$(printf "$3" | ./chi^2 -n "$1")"
     echo $score_1 $score_2
     if [ $(bc <<< "$score_1 < $score_2") -ne 1 ]; then
-	echo "[x] \"$1\" >= \"$2\"; exiting." 1>&2
+	echo "[x] \"$2\" >= \"$3\"; exiting." 1>&2
 	exit 1
     else
-	echo "[✓] \"$1\" < \"$2\"" 1>&2
+	echo "[✓] \"$2\" < \"$3\"" 1>&2
     fi
 }
 
-compare "data" "xxxx"
-compare "hello world" "xyz"
-compare "hello world, how are you?" "CQSZb3sePl=SSCs3EThvThgu\\S"
-compare "hello world, how are you?" "anSZ'xB?exIfSC,yET#&ThSadY"
-compare "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@BraES"
-compare "aaa" "aaa!!!!!!!!"
-compare " " "a"
+compare 1 "data" "xxxx"
+compare 1 "hello world" "xyz"
+compare 1 "hello world, how are you?" "CQSZb3sePl=SSCs3EThvThgu\\S"
+compare 1 "hello world, how are you?" "anSZ'xB?exIfSC,yET#&ThSadY"
+compare 1 "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@BraES"
+compare 1 "aaa" "aaa!!!!!!!!"
+compare 1 "a " "ab"
+compare 1 "hdbco lnrln, gem asf you'" "hello world, how are you."
+
+compare 2 "data" "xxxx"
+compare 2 "hello world" "xyz"
+compare 2 "hello world, how are you?" "CQSZb3sePl=SSCs3EThvThgu\\S"
+compare 2 "hello world, how are you?" "anSZ'xB?exIfSC,yET#&ThSadY"
+compare 2 "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@BraES"
+compare 2 "aaa" "aaa!!!!!!!!"
+compare 2 "a " "ab"
+compare 2 "hello world, how are you." "hdbco lnrln, gem asf you."
