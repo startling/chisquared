@@ -1,13 +1,12 @@
 CFLAGS=-Wall -Werror -g -O0
 INSTALL_DIR=~/.bin/
 
-
 all: chi^2
 
 .PHONY: all test
 
-chi^2: main.c
-	$(CC) $< -o $@ $(CFLAGS)
+chi^2: main.c frequencies.c digrams.c
+	$(CC) $^ -o $@ $(CFLAGS)
 
 test: chi^2
 	./test
