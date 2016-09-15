@@ -1,0 +1,24 @@
+* chi^2
+
+Fast [[https://en.wikipedia.org/wiki/Chi-squared_testchi][chi squared]] (sum of squared errors) single-character and digram
+frequency analysis for English text.
+unix socket.
+
+
+Single-character:
+
+  #+begin_src sh
+    $ printf 'hello' | ./chi^2
+    38.769631
+    $ printf 'xxxxx' | ./chi^2
+    2450.795683
+  #+end_src
+
+Digram:
+
+  #+begin_src sh
+    $ printf 'hello' | ./chi^2 -n 2
+    175.686545
+    $ printf 'xxxxx' | ./chi^2 -n 2
+    15193.678176
+  #+end_src
