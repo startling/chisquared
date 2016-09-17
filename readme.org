@@ -1,9 +1,7 @@
 * chi^2
 
 Fast [[https://en.wikipedia.org/wiki/Chi-squared_testchi][chi squared]] (sum of squared errors) single-character and digram
-frequency analysis for English text.
-unix socket.
-
+frequency analysis for English text. Lower values = more like English.
 
 Single-character:
 
@@ -22,3 +20,21 @@ Digram:
     $ printf 'xxxxx' | ./chi^2 -n 2
     15193.678176
   #+end_src
+
+If you're running this in a tight loop, process overhead can be an
+issue, so you can run it as a daemon on a unix socket, and write to
+the socket rather than starting a child:
+
+  #+begin_src sh
+    $ ./chi^2 -s /tmp/chi^2.sock -n 2 &
+    [1] 10963
+    $ printf "hello" | ncat -U /tmp/chi^2.sock
+    175.686545
+    $ printf "xxxxx" | ncat -U /tmp/chi^2.sock
+    15193.678176
+    $ kill 10963
+    [1]+  Done                    ./chi^2 -s /tmp/chi^2.sock -n 2
+  #+end_src
+
+n.b. the reason to use ~printf~ here is so that there's not a newline
+after the text.

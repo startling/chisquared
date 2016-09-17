@@ -31,3 +31,40 @@ compare 2 "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@
 compare 2 "aaa" "aaa!!!!!!!!"
 compare 2 "a " "ab"
 compare 2 "hello world, how are you?" "hdbco lnrln, gem asf you."
+
+
+# the socket mode is a little tricker to test...
+
+TEMPDIR="$(mktemp -d "/tmp/test_chi^2.XXXXXX")"
+SOCK="$TEMPDIR/sock"
+function cleanup() {
+   if [ -n "$!" ]; then
+	kill "$!"
+   fi
+   rm -r "$TEMPDIR"
+}
+trap cleanup ERR
+trap cleanup EXIT
+
+./chi^2 -n 2 -s "$SOCK" &
+
+function compare_s () {
+    score_1="$(printf "$1" | ncat -U $SOCK)"
+    score_2="$(printf "$2" | ncat -U $SOCK)"
+    echo $score_1 $score_2
+    if [ $(bc <<< "$score_1 < $score_2") -ne 1 ]; then
+	echo "[x] \"$1\" >= \"$2\"; exiting." 1>&2
+	exit 1
+    else
+	echo "[✓] \"$1\" < \"$2\"" 1>&2
+    fi
+}
+
+compare_s "data" "xxxx"
+compare_s "hello world" "xyz"
+compare_s "hello world, how are you?" "CQSZb3sePl=SSCs3EThvThgu\\S"
+compare_s "hello world, how are you?" "anSZ'xB?exIfSC,yET#&ThSadY"
+compare_s "hello world, how are you?" "kxTelF_ROeEGoUgHer#&oSingQzxWedS'_WarThC@BraES"
+compare_s "aaa" "aaa!!!!!!!!"
+compare_s "a " "ab"
+compare_s "hello world, how are you?" "hdbco lnrln, gem asf you."
